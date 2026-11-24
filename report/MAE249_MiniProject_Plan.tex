@@ -1,0 +1,33 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{mathptmx}
+\usepackage{array,booktabs}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\pagestyle{empty}
+\newcommand{\meff}{\mu_{\mathrm{eff}}}
+\begin{document}
+{\Large\bfseries MAE 249 Mini-Project Plan}\par
+\textbf{Project:} Tolerance Budget for a Fast Fiber-Reinforced Bending Actuator Model --- At What Wall-Thickness Tolerance Does Geometry Error Outweigh Modulus Uncertainty?\\
+\textbf{Student:} Chengen Ruan (individual)
+
+\small
+\textbf{Research question.} In the analytical bending model of Polygerinos et al.\ (2015), the fitted modulus $\meff=0.314$~MPa is 43\% above the small-strain value 0.22~MPa. After adding material nonlinearity (Yeoh) and the sheath, a smaller \emph{remaining gap} to the measured pressure is left. Is that remaining gap larger or smaller than the pressure scatter caused by wall-thickness tolerance? The gap is a systematic bias and tolerance is random scatter, so I define the crossover $\sigma_t^*$ as the $\sigma_t$ at which the 1$\sigma$ pressure scatter equals $|$gap$|$. \textbf{Hypothesis:} below $\sigma_t^*$ modulus uncertainty matters more, above it thickness tolerance matters more. A rough estimate from Quad-Chart numbers ($d\ln P/d\ln t\approx1.25$, to be computed in task 3) gives $\sigma_t^*\approx0.02$--0.2~mm depending on the sheath assumption; if the sheath band makes the gap change sign, $\sigma_t^*$ is an interval whose lower end may be 0, and I will report it that way.
+\textbf{Key plot:} 360$^\circ$ pressure error, expressed as an equivalent $\meff$ shift (the Neo-Hookean modulus that gives the same pressure), vs.\ $\sigma_t$, with $|$gap$|$ after the Yeoh model (sheath range as a band) as the reference line; $\sigma_t^*$ is the intersection. $\sigma_t$ axis is logarithmic. Pure computation: no fabrication, no Programmable Air board.
+
+\footnotesize\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|>{\bfseries\raggedright}p{1.05in}|p{3.9in}|p{1.0in}|p{0.45in}|}
+\hline
+Task Name & \textbf{Task Description} & \textbf{Resources} & \textbf{Time} \\ \hline
+1. Reproduce baseline & Implement the analytical model of Polygerinos et al.\ in Python (Neo-Hookean). Baseline ($a$=8, $b$=2, $t$=2, $L$=160~mm) must match the values read from Figs.~8 and 10(a) of the paper (about 235--240~kPa at 360$^\circ$; several geometries and angles) within 5\%. The 220~kPa label in Fig.~9 and the measured 207~kPa are \emph{not} acceptance targets: any deviation from them is recorded and traced to its cause for the report. Extra time reserved because this blocks everything else. & Python (NumPy/SciPy), paper & 5 h \\ \hline
+2. Model ladder (prerequisite for 5) & Add Yeoh ($C_1$=0.11, $C_2$=0.02~MPa) and Ecoflex sheath (range from three modulus conversions). Define the remaining gap = measured pressure vs.\ Yeoh prediction, converted to an equivalent $\meff$ shift (Neo-Hookean modulus giving the same pressure at the same angle). & Python & 3 h \\ \hline
+3. Local sensitivity & Central differences of $\ln P$ in $\ln x$ for $a,b,t,L,\meff$ at 180$^\circ$, 270$^\circ$, 360$^\circ$; \emph{compute} (not assume) the elasticities; check against finite perturbations. & Python & 2 h \\ \hline
+4. Monte Carlo and crossover & Sweep $\sigma_t$ (0.01--0.40~mm, log axis) at 360$^\circ$. Compare (a) $t$ only vs.\ (b) correlated: outer profile fixed by the mold, so inner $a,b$ shift opposite to $t$. Convert spread to equivalent $\meff$ shift; locate $\sigma_t^*$ for each gap reference (Yeoh; Yeoh+sheath; sheath range ends). Discuss limits of a single uniform $t$. & Python & 3 h \\ \hline
+5. Tolerance range & Brief literature check for typical mold/3D-print dimensional accuracy, used only to mark a reference band on the $\sigma_t$ axis (sweep is the primary design). & Papers & 1 h \\ \hline
+6. Figures & Fig.~1: small block-flow diagram. Fig.~2: multi-panel (main plot with $\sigma_t^*$; sensitivity bars; Monte Carlo histogram). & matplotlib, draw.io & 3 h \\ \hline
+7. Report & 3-page report in the required format (question, approach, results, iteration, AI statement). & \LaTeX & 5 h \\ \hline
+8. Buffer / optional & Iterate if baseline or ladder fails; if time remains, a short validation paragraph comparing to digitized Fig.~10 (digitization error noted). & --- & 2 h \\ \hline
+\textbf{Total} & & & \textbf{24 h} \\ \hline
+\end{tabular}
+
+\small\textbf{Schedule.} 11/10--11/12: tasks 1--2 (plan submitted 11/12). 11/13--11/17: tasks 3--5. 11/18--11/20: task 6. 11/21--11/23: task 7, buffer. Report due 11/24.
+\end{document}

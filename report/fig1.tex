@@ -1,0 +1,48 @@
+% Figure 1: computational workflow. Needs in the preamble:
+%   \usepackage{tikz}  \usetikzlibrary{positioning, arrows.meta}
+% Drawn at natural size (no resizebox) so all text stays at footnotesize = 10 pt in a 12 pt document.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    font=\footnotesize,
+    box/.style={rectangle, rounded corners=3pt, draw=#1!75!black, fill=#1!7, line width=0.8pt,
+                align=left, inner sep=4pt, text width=4.4cm, minimum height=2.6cm, anchor=north west},
+    arr/.style={-{Stealth[length=5pt,width=4pt]}, line width=0.85pt, draw=black!75},
+    dsh/.style={arr, dashed},
+    ]
+\newcommand{\bt}[1]{\textbf{#1}\\[2pt]}
+% ---- row 1
+\node[box=gray]  (model)  at (0,0)    {\bt{1. Analytical model}
+  $\bullet$ $P(\theta)=M(\theta)/\kappa$\\
+  $\bullet$ $a{=}8,\,b{=}2,\,t{=}2,\,L{=}160$\,mm\\
+  $\bullet$ Gauss--Legendre; matches \texttt{quad} to $\approx\!10^{-13}$\,kPa};
+\node[box=gray]  (ladder) at (5.6,0)  {\bt{2. Model ladder ($360^\circ$)}
+  $\bullet$ M0: NH 0.22\,MPa; M1: Yeoh\\
+  $\bullet$ M2a--c: Yeoh $+$ 1\,mm sheath (25/39/92\,kPa)\\
+  $\bullet$ Ref: NH 0.314\,MPa};
+\node[box=gray]  (bias)   at (11.2,0) {\bt{3. Systematic bias}
+  $\bullet$ $\mathrm{gap}=P_{\mathrm{exp}}-P_{\mathrm{model}}$, $P_{\mathrm{exp}}{=}207$\,kPa\\
+  $\bullet$ $\Delta\mu_{\mathrm{eq}}=\Delta P/(dP/d\mu)_{\mathrm{NH}}$};
+% ---- row 2
+\node[box=blue]  (sens)   at (0,-3.15)    {\bt{S. Local sensitivity}
+  $\bullet$ $\pm1\%$ central differences\\
+  $\bullet$ $\partial\ln P/\partial\ln x$, $x\in\{a,b,t,L,\mu\}$, $180^\circ$/$270^\circ$/$360^\circ$};
+\node[box=red]   (mc)     at (5.6,-3.15)  {\bt{4. Monte Carlo sweep}
+  $\bullet$ $\sigma_t\in[0.01,0.40]$\,mm, $N{=}20\,000$, all stages\\
+  $\bullet$ \texttt{t-only}, \texttt{corr}, \texttt{full}\\
+  $\bullet$ $1\sigma$ scatter of $P_{360^\circ}$};
+\node[box=violet](budget) at (11.2,-3.15) {\bt{5. Tolerance budget}
+  $\bullet$ $\sigma_t^{*}$: scatter $=|\mathrm{gap}|$ (interval if gap changes sign)\\
+  $\bullet$ McCall (2024) band: 0.04--0.06\,mm; scaled 0.128\,mm};
+% ---- arrows
+\draw[arr]  (model.east |- ladder.east) -- (ladder.west);
+\draw[arr]  (ladder.east) -- (bias.west);
+\draw[arr]  (model.south) -- (sens.north);
+\draw[arr]  (ladder.south) -- (mc.north);
+\draw[dsh] (sens.east) -- (mc.west);
+\draw[arr]  (mc.east) -- (budget.west);
+\draw[arr]  (bias.south) -- (budget.north);
+\end{tikzpicture}
+\caption{Computational workflow: systematic bias (top row) vs.\ random tolerance scatter (bottom row) gives $\sigma_t^{*}$. Dashed: elasticities cross-check the Monte Carlo slope.}
+\label{fig:workflow}
+\end{figure}
